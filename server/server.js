@@ -13,8 +13,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 MongoCLient.connect('mongodb://daeniz:obelix@ds153400.mlab.com:53400/todoapp',(err,database)=>{
     if(err) return console.log(err)
     db = database
-    app.listen(3000,()=>{
-        console.log('3000');
+    app.listen(3001,()=>{
+        console.log('3001');
     });
 
 })
