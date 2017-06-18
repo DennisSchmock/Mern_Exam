@@ -2,8 +2,9 @@ import React from "react";
 
 const Home = () => (
   <div>
-    <h2>Home View</h2>
-    <p>Info about this site</p>
+    <h2>Welcome to iTournamentmaker.com</h2>
+    <p>This page is part of the iTournamentMaker eco-system.</p>
+    <p>Please login or register to enter.</p>
   </div>
 )
 

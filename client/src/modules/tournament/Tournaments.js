@@ -1,47 +1,36 @@
-import React, { Component } from 'react';
-import { Link } from "react-router"
+import React from 'react';
+import {Link} from "react-router"
+import {observer} from "mobx-react";
+import TournamentForm from './TournamentForm'
+
+
+const Tournaments = observer((props) => {
+
+    var tournaments = props.route.tournamentStore.getTournaments();
 
 
 
 
-var tournamentStore = [
-    {id: 1,name: "tournament", description: "Test"},
-    {id: 2, name: "tournament2", description: "Test2"},
-    {id: 3, name: "tournament3", description: "Test2"}
-    
-]
-
-
-
-export default class Tournaments extends Component{
-
-    // const MapTournaments = tournamentStore.map((book)=>{
-    //     return
-    // })
-
-    render(){
-        return(
-            <div className="container">
-                <div className="page-header">
-                    <h3 className="">Here will be a list of my tournaments</h3>
-                </div>
-                    <ul className="list-group">
-                        {tournamentStore.map((tour)=> 
-                            //Key to identify element 
-                            <li type="button" key={tour.id} className="list-group-item">
-                                {tour.name} <Link to={`tournament/id/${tour.id}`}>Edit tournament</Link>
-                            </li>)}
-                    </ul>
-                
-            </div>
-        )
-    }
-}
-
-function Tournament(props){
+    console.log(tournaments)
     return (
-        <li>
-            {props.name}
-        </li>
+        <div className="container">
+            <ul className="list-group">
+                {tournaments.map((tour) =>
+                    //Key to identify element
+                    <button key={tour.id} className="list-group-item">
+                        <div className="container col-sm-4"><strong> {tour.title}</strong></div>
+                        <div className="container col-sm-4"><Link to={`tournament/id/${tour.id}`}>Tournament Dashboard</Link></div>
+                            <button to ="/tournaments" type="button" name="delete" value={tour.id} onClick={()=>
+                                props.route.tournamentStore.deleteTournament(tour.id)} className="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </button>)}
+            </ul>
+
+            <TournamentForm tournamentStore={props.route.tournamentStore}/>
+        </div>
     )
-}
+
+
+
+})
+
+export default Tournaments

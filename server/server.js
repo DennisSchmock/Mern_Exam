@@ -2,26 +2,45 @@ let express = require('express');
 let app = express();
 let logger = require('morgan');
 let bodyParser = require('body-parser');
-let MongoCLient = require('mongodb').MongoClient;
 let mongoose = require('mongoose');
 let config = require('./config')
-var db
-app.use(logger('dev'));
-app.use(bodyParser.urlencoded({extended: true}));
+let Models = require('./models/Tournament')
+let Player = require('./models/Player')
+
+app.use(logger("dev"))
 
 
 
-MongoCLient.connect(`mongodb://${config.username}:${config.password}@ds153400.mlab.com:53400/todoapp`,(err,database)=>{
-    if(err) return console.log(err)
-    db = database
+mongoose.connect(`mongodb://${config.username}:${config.password}@ds153400.mlab.com:53400/todoapp`);
+
+mongoose.connection.on('connected',()=>{
+    console.log('Mongose connected');
     app.listen(3001,()=>{
-        console.log('3001');
+        console.log('Powered up and listening to port: 3001');
     });
+});
 
+mongoose.connection.on('error', function(err){
+    console.log('Mongoose error' + err);
+
+});
+
+mongoose.connection.on('disconnected',()=>{
+    console.log('Disconnected');
 })
 
 
+app.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+});
 
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
 
 app.get('/',function(req,res){
    res.sendFile(__dirname + '/public/index.html')
@@ -29,44 +48,77 @@ app.get('/',function(req,res){
 
 //Get a list of tournaments
 app.get('/tournaments',(req,res)=>{
-    var cursor = db.collection('tournaments')
-        .find()
-        .toArray(function(err,results){
-           res.send(JSON.stringify(results));
-        });
+    Models.TournamentModel.find({},function (err,tournaments) {
+       if(err) throw err;
+       res.send(JSON.stringify(tournaments))
+
+    })
 })
 
 //Create new tournament
 app.post('/tournament',(req,res)=>{
-    db.collection('tournaments').save(req.body,(err,result)=>{
-        if (err) console.log(err);
-        console.log('saved to db')
-        res.redirect('/');
-    });
+    let tournament = req.body.tournament
+    console.log(req.body.tournament)
+    Models.TournamentModel.create(tournament, (err,tournament)=> {
+       if(err) throw err;
+       res.json(tournament);
+       console.log(tournament)
+   })
 });
 
-//Update tournament
-app.post('/tournament/:id',function(req,res){
-    var tournamentId = parseInt( req.params.id);
-    db.collection('tourmanents')
-        .findOneAndUpdate({id: tournamentId},{
-            $set: {
-                name: req.body.name,
-                quote: req.body.quote
-            }
-        }, (err,result)=>{
-            if(err) return res.send(err)
-            res.send(JSON.stringify(result));
-        })
-})
 
+//Update tournament
+app.put('/tournament/:id',function(req,res){
+    let id = req.params.id;
+    let tournamentToEdit = req.body.tournament
+    console.log("My _id = " + tournamentToEdit._id)
+    Models.TournamentModel.findById(tournamentToEdit._id, (err,tournament)=>{
+        if(err){
+           console.log(err)
+            console.log("error")
+        } else
+        {
+            tournament.title = tournamentToEdit.title
+            tournament.description = tournamentToEdit.description
+
+            tournament.save((err,tournament)=>{
+                if (err){
+                    res.status(500).send(err)
+                }
+                res.send(tournament)
+            })
+
+        }
+    })
+
+})
 
 //Delete tournament
 app.delete('/tournament/:id', (req,res)=>{
-    var tournamentId = parseInt (req.params.id);
-    db.collection('quotes')
-        .deleteOne({id: tournamentId }, (err,data)=>{
-            if (err) return res.send(500,err);
-            res.send({message: 'a tournament got deleted'});
-        })
+    let tournamentId = parseInt (req.params.id);
+    Models.TournamentModel.findOneAndRemove({id: tournamentId}, (err,data)=> {
+        if(err){console.log(err.message)}
+        else {res.status(204).send()}
+
+    })
+
 })
+
+//PLAYERS
+//Create new tournament
+app.post('/tournament/player',(req,res)=>{
+    let player = req.body.player
+    console.log(player)
+    Models.TournamentModel.findOne({'id' : player.tournamentId},(err,tournament)=>{
+        if(err) {
+            console.log(err.message)
+        }
+        tournament.players.push(player);
+        tournament.save(function(err){
+            if(err) return console.log(err)
+            console.log("succes!")
+        })
+        res.send(player.json)
+
+    })
+});

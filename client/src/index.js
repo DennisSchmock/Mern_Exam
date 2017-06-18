@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import RouterComp from './RouterComp';
 import './index.css';
+import TournamentStore from './models/TournamentStore'
 
 ReactDOM.render(
-  <RouterComp />,
+  <RouterComp tournamentStore={TournamentStore} />,
   document.getElementById('root')
 );
 
