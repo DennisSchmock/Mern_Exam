@@ -20,8 +20,9 @@ var PlayerSchema = new Schema({
 PlayerSchema.plugin(autoIncrement.plugin,{
     model: 'Player',
     field: 'id',
-    startAt: 100,
-    incrementBy: 1
+    startAt: 1,
+    incrementBy: 1,
+    unique: false
 })
 let PlayerModel = mongoose.model("Player", PlayerSchema);
 

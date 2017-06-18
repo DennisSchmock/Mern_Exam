@@ -6,21 +6,29 @@ import React, {Component}  from 'react';
 
 export default class PlayerForm extends Component {
 
+    constructor(props){
+        super(props)
+        this.state = {name: ''};
+        this.handleChange = this.handleChange.bind(this);
+
+    }
+
+    handleChange(event) {
+        this.setState({name: event.target.value});
+    }
 
     handleSubmit = (event) => {
         event.preventDefault()
-        const target = event.target;
         var player = {}
-        player.name = target.name.value
+        player.name = this.state.name
         player.tournamentId = this.props.tournamentId;
         this.props.playerStore.addPlayer(player);
+        this.setState({name: ''});
 
     }
 
     render() {
         return (
-
-
 
             <form  onSubmit={this.handleSubmit}>
 
@@ -30,7 +38,10 @@ export default class PlayerForm extends Component {
                         name="name"
                         className="form-control"
                         placeholder="Add player name..."
+                        value={this.state.name}
                         required={true}
+                        onChange={this.handleChange}
+
                     />
 
                     <span className="input-group-btn">

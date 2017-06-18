@@ -4,10 +4,15 @@ import {observer} from "mobx-react";
 import Players from './Players'
 import Events from './Events'
 import PlayerStore from '../../models/PlayerStore'
-import EventStore from '../../models/EventStore'
 
 
 const TournamentDashboard = observer(class TournamentDetails extends Component {
+
+    constructor(props){
+        super(props)
+        let id = this.props.params.id;
+        PlayerStore.fetchPlayers(id);
+    }
 
 
 
@@ -15,7 +20,6 @@ const TournamentDashboard = observer(class TournamentDetails extends Component {
         let id = this.props.params.id;
         let tournament
         tournament = this.props.route.tournamentStore.getTournament(id)
-        console.log(tournament)
 
 
         return (

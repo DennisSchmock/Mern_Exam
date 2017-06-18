@@ -1,5 +1,6 @@
 // import React  from 'react';
 import { action, useStrict, extendObservable} from 'mobx'
+import AuthStore from "./AuthStore"
 
 import axios from 'axios'
 
@@ -14,6 +15,10 @@ class TournamentStore{
         extendObservable(this,{
             _tournaments: []
         })
+        this._jwt = AuthStore.getToken();
+        this._authHeader = {headers: {
+            'Authorization' : `JWT ${this._jwt}`
+        }}
 
         this.fetchTournaments();
     };
@@ -36,20 +41,16 @@ class TournamentStore{
             })
             .then(action((response)=>{
                 this._tournaments = response;
-                console.log("We have data!")
             }))
     }
 
 
     addTournament = (tournament) => {
 
-        console.log("Before fetch")
-        console.log(tournament)
         var self = this
-        axios.post(url +"tournament",{tournament})
+        axios.post(url +"tournament",{tournament},this._authHeader)
             .then(()=>{
             self.fetchTournaments();
-
 
         });
 
@@ -57,7 +58,7 @@ class TournamentStore{
 
     deleteTournament = (id) =>{
         var self = this
-        axios.delete(url + "tournament/" + id)
+        axios.delete(url + "tournament/" + id, this._authHeader)
             .then((response) =>{
             self.fetchTournaments();
         }).catch((err)=>{
@@ -69,7 +70,7 @@ class TournamentStore{
     updateTournament = (tournament) => {
         var self = this
         let id = tournament.id
-        axios.put(url + "tournament/" + id,{tournament})
+        axios.put(url + "tournament/" + id,{tournament}, this._authHeader)
             .then(()=>{
                 self.fetchTournaments()
             }).catch((err)=>{

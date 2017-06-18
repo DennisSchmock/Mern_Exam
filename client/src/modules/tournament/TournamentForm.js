@@ -11,7 +11,6 @@ export default class TournamentForm extends Component {
         var tournament = {}
         tournament.description = target.description.value
         tournament.title = target.title.value
-        console.log(tournament)
         this.props.tournamentStore.addTournament(tournament);
         this.setState({
             title: "",

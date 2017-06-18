@@ -8,13 +8,15 @@ export default class EventForm extends Component {
 
 
     handleSubmit = (event) => {
-        event.preventDefault()
-        const target = event.target;
-        console.log(target)
-        var e = {}
-        e.name = target.name.value
-        e.tournamentId = "";
-        this.props.playerStore.addPlayer(e);
+        // event.preventDefault()
+        // const target = event.target;
+        // console.log(target)
+        // var e = {}
+        // e.name = target.name.value
+        // e.tournamentId = "";
+        // this.props.playerStore.addPlayer(e);
+
+
 
     }
 
@@ -22,7 +24,7 @@ export default class EventForm extends Component {
         return (
 
 
-            <form  onSubmit={this.handleSubmit}>
+            <form>
 
                 <div className="input-group">
                     <input
@@ -34,7 +36,7 @@ export default class EventForm extends Component {
                     />
 
                     <span className="input-group-btn">
-                            <button className="btn btn-default">Add!</button>
+                            <button className="btn btn-default" disabled={true}>Add!</button>
                         </span>
                 </div>
 

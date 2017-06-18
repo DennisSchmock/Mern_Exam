@@ -7,11 +7,8 @@ import TournamentForm from './TournamentForm'
 const Tournaments = observer((props) => {
 
     var tournaments = props.route.tournamentStore.getTournaments();
+    //Todo - refactor Listitem into own component
 
-
-
-
-    console.log(tournaments)
     return (
         <div className="container">
             <ul className="list-group">

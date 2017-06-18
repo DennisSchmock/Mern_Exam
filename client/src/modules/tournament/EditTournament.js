@@ -10,13 +10,13 @@ export default class EditTournament extends Component {
     handleSubmit = (event) => {
         event.preventDefault()
         const target = event.target;
-        console.log(target)
         var tournament = {}
         tournament.description = target.description.value
         tournament.title = target.title.value
         tournament._id = target.id.value;
         this.props.route.tournamentStore.updateTournament(tournament);
-
+        window.location = '#/tournament/id/' + this.props.params.id+"/";
+        ;
     }
 
 
@@ -24,7 +24,6 @@ export default class EditTournament extends Component {
         let id = this.props.params.id;
         let tournament
         tournament = this.props.route.tournamentStore.getTournament(id)
-        console.log(tournament._id)
         return (
 
             <div className="container col-sm-4">

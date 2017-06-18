@@ -19,7 +19,6 @@ class EventStore{
         })
 
         this._observer = null;
-        this.fetchEvents();
     };
 
     getEvents(){
